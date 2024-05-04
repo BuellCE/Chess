@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import javax.imageio.ImageIO;
 
 import evan.chess.logic.Board;
+import evan.chess.logic.Move;
 import evan.chess.logic.Position;
 import evan.chess.main.Settings;
 
@@ -88,8 +89,8 @@ public class Pawn extends PlayingPiece{
 	}
 	
 	@Override
-	public ArrayList<Position> generateMoves(Board board) {
-		ArrayList<Position> generatedMoves = new ArrayList<Position>();
+	public ArrayList<Move> generateMoves(Board board) {
+		ArrayList<Move> generatedMoves = new ArrayList<Move>();
 
 		Position upLeft = new Position(getPosition().x + movingDirection, getPosition().y - 1);
 		Position upRight = new Position(getPosition().x + movingDirection, getPosition().y + 1);
@@ -99,7 +100,7 @@ public class Pawn extends PlayingPiece{
 			if (board.isInBounds(upLeft.x, upLeft.y)) {
 				for (Position pos : limitedMovement) {
 					if (pos.equals(upLeft)) {
-						generatedMoves.add(upLeft);
+						generatedMoves.add(new Move(this.getPosition(), upLeft));
 					}
 				}
 			}
@@ -107,7 +108,7 @@ public class Pawn extends PlayingPiece{
 			if (board.isInBounds(upRight.x, upRight.y)) {
 				for (Position pos : limitedMovement) {
 					if (pos.equals(upRight)) {
-						generatedMoves.add(upRight);
+						generatedMoves.add(new Move(this.getPosition(), upRight));
 					}
 				}
 			}
@@ -117,20 +118,20 @@ public class Pawn extends PlayingPiece{
 		
 		Position up = new Position(getPosition().x + movingDirection, getPosition().y);
 		if (board.isSquareEmpty(up.x, up.y)) {
-			generatedMoves.add(up);
+			generatedMoves.add(new Move(this.getPosition(), up));
 		}
 		if (!hasMovedBefore()) {
 			Position up2 = new Position(getPosition().x + (movingDirection * 2), getPosition().y);
 			if (board.isSquareEmpty(up.x, up.y) && board.isSquareEmpty(up2.x, up2.y)) {
-				generatedMoves.add(up2);
+				generatedMoves.add(new Move(this.getPosition(), up2));
 			}
 		}
 		
 		if (!board.isSquareEmpty(upRight.x, upRight.y) && board.isSquareAWhitePiece(upRight.x, upRight.y) != isAWhitePiece()) {
-			generatedMoves.add(upRight);
+			generatedMoves.add(new Move(this.getPosition(), upRight));
 		}
 		if (!board.isSquareEmpty(upLeft.x, upLeft.y) && board.isSquareAWhitePiece(upLeft.x, upLeft.y) != isAWhitePiece()) {
-			generatedMoves.add(upLeft);
+			generatedMoves.add(new Move(this.getPosition(), upLeft));
 		}
 		
 		return generatedMoves;

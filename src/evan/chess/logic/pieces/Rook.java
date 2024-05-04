@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import javax.imageio.ImageIO;
 
 import evan.chess.logic.Board;
+import evan.chess.logic.Move;
 import evan.chess.logic.Position;
 import evan.chess.main.Settings;
 
@@ -27,6 +28,7 @@ public class Rook extends PlayingPiece{
 		 {-1,-2,1,1,1,1,-2,-1}
 	};
 	
+	//All directions a rook can move
 	private static final int[][] OFFSETS = {
 		{1,0}, {-1,0}, {0,1}, {0,-1}
 	};
@@ -75,8 +77,14 @@ public class Rook extends PlayingPiece{
 	}
 	
 	@Override
-	public ArrayList<Position> generateMoves(Board board) {
-		return super.generateLinearPositions(OFFSETS, board);
+	public ArrayList<Move> generateMoves(Board board) {
+		ArrayList<Move> moves = new ArrayList<Move>();
+		
+		for (Position pos : super.generateLinearPositions(OFFSETS, board)) {
+			moves.add(new Move(this.getPosition(), pos));
+		}
+		
+		return moves;
 	}
 
 	

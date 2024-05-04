@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import javax.imageio.ImageIO;
 
 import evan.chess.logic.Board;
+import evan.chess.logic.Move;
 import evan.chess.logic.Position;
 import evan.chess.main.Settings;
 
@@ -27,6 +28,7 @@ public class Knight extends PlayingPiece{
 		 {-3,-3,-2,-2,-2,-2,-3,-3}
 	};
 	
+	//All the moves a knight can make
 	private static final int[][] OFFSETS = {
 		{2,1}, {2,-1}, {-2,1}, {-2,-1}, {1,2}, {-1,2}, {1,-2}, {-1,-2}
 	};
@@ -75,8 +77,17 @@ public class Knight extends PlayingPiece{
 	}
 	
 	@Override
-	public ArrayList<Position> generateMoves(Board board) {
-		return super.generateSingularPositions(OFFSETS, board);
+	public ArrayList<Move> generateMoves(Board board) {
+		
+		ArrayList<Move> moves = new ArrayList<Move>();
+		
+		for (Position pos : super.generateSingularPositions(OFFSETS, board)) {
+			moves.add(new Move(this.getPosition(), pos));
+		}
+		
+		return moves;
+		
+		
 	}
 
 	@Override

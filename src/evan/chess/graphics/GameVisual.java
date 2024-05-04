@@ -6,6 +6,7 @@ import java.awt.Graphics;
 import java.awt.Image;
 import java.util.ArrayList;
 
+import evan.chess.logic.Move;
 import evan.chess.logic.Position;
 import evan.chess.logic.pieces.PlayingPiece;
 import evan.chess.main.Settings;
@@ -63,7 +64,7 @@ public class GameVisual {
 	}
 	
 
-	public void paintPossibleMovements(Graphics graphics, Position selectedPiece, ArrayList<Position> moves) {
+	public void paintPossibleMovements(Graphics graphics, Position selectedPiece, ArrayList<Move> moves) {
 		if (moves == null || selectedPiece == null) {
 			return;
 		}
@@ -71,7 +72,8 @@ public class GameVisual {
 		graphics.fillRect(selectedPiece.y * Settings.WINDOW_SIZE_PER_SLOT, selectedPiece.x * Settings.WINDOW_SIZE_PER_SLOT, squareSize, squareSize);
 		
 		graphics.setColor(Settings.POSSIBLE_MOVES_COLOR);
-		for (Position p : moves) {
+		for (Move move : moves) {
+			Position p = move.getTo();
 
 			int startX = p.x * Settings.WINDOW_SIZE_PER_SLOT;
 			int startY = p.y * Settings.WINDOW_SIZE_PER_SLOT;

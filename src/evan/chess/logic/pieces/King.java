@@ -28,6 +28,7 @@ public class King extends PlayingPiece{
 		 { 3, 3, 1, 0, 0, 1, 3, 3}
 	};
 	
+	//All the moves a king can make
 	private static final int[][] OFFSETS = {
 		{1,1}, {1,-1}, {-1,1}, {-1,-1}, {1,0}, {-1,0}, {0,1}, {0,-1}
 	};
@@ -81,12 +82,12 @@ public class King extends PlayingPiece{
 	}
 	
 	@Override
-	public ArrayList<Position> generateMoves(Board board) {
+	public ArrayList<Move> generateMoves(Board board) {
 		
 		canCastleLeft = false;
 		canCastleRight = false;
 		
-		ArrayList<Position> generatedMoves = new ArrayList<Position>();
+		ArrayList<Move> generatedMoves = new ArrayList<Move>();
 		W: for (int[] offset : OFFSETS) {
 			Position move = new Position(getPosition().x + offset[0], getPosition().y + offset[1]);
 			
@@ -102,7 +103,7 @@ public class King extends PlayingPiece{
 					}
 				}
 				
-				generatedMoves.add(move);
+				generatedMoves.add(new Move(this.getPosition(), move));
 			}
 			
 			
@@ -128,7 +129,12 @@ public class King extends PlayingPiece{
 						}
 						if (move != null) {
 							canCastleLeft = true;
-							generatedMoves.add(move);
+							Move castleLeft = new Move(this.getPosition(), move);
+							Position rookPosition = rook.getPosition();
+							Position newRookPosition = new Position(rookPosition.x, rookPosition.y + 3);
+							Move rookMoveInCastle = new Move(rookPosition, newRookPosition);
+							castleLeft.setAdditionalMove(rookMoveInCastle);
+							generatedMoves.add(castleLeft);
 						}
 						
 					}
@@ -150,7 +156,12 @@ public class King extends PlayingPiece{
 						}
 						if (move != null) {
 							canCastleLeft = false;
-							generatedMoves.add(move);
+							Move castleRight = new Move(this.getPosition(), move);
+							Position rookPosition = rook.getPosition();
+							Position newRookPosition = new Position(rookPosition.x, rookPosition.y - 2);
+							Move rookMoveInCastle = new Move(rookPosition, newRookPosition);
+							castleRight.setAdditionalMove(rookMoveInCastle);
+							generatedMoves.add(castleRight);
 						}
 						
 					}

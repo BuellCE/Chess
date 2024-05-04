@@ -33,6 +33,14 @@ public class Board {
 	
 	public void makeAMove(Move move, int movingPlayerId) {
 		setPieceAt(move.getTo(), getPieceAt(move.getFrom()));
+		
+		Move additionalMove = move.getAdditionalMove();
+		if (additionalMove != null) {
+			setPieceAt(additionalMove.getTo(), getPieceAt(additionalMove.getFrom()));
+			setPieceAt(additionalMove.getFrom(), null);
+		}
+		
+		
 		PlayingPiece piece = setPieceAt(move.getFrom(), null);
 		
 
@@ -132,33 +140,34 @@ public class Board {
 					continue;
 				}
 				if (p.getOwner() == movingPlayer) {
-					for (Position pos : p.generateMoves(this)) {
+					for (Move move : p.generateMoves(this)) {
+						Position pos = move.getTo();
 						if (!isInBounds(pos.x, pos.y)) {
 							continue;
 						}
-						Move potentialMove = new Move(p.getPosition(), pos);
 						Move[] previous = getPreviousMovesOfPlayer(movingPlayer);
-						if (potentialMove.equals(previous[1])) {
-							if (previous[0].getFrom().equals(potentialMove.getTo())) {
-								if (previous[0].getTo().equals(potentialMove.getFrom())) {
+						if (move.equals(previous[1])) {
+							if (previous[0].getFrom().equals(pos)) {
+								if (previous[0].getTo().equals(move.getFrom())) {
 									continue;
 								}
 							}
 						}
 						
 						if (p.limitedMovement.isEmpty()) {
-							getAllyMoves(movingPlayer).add(potentialMove);
+							getAllyMoves(movingPlayer).add(move);
 						}else {
 							for (Position limited : p.limitedMovement) {
 								if (pos.equals(limited)) {
-									getAllyMoves(movingPlayer).add(potentialMove);
+									getAllyMoves(movingPlayer).add(move);
 									break;
 								}
 							}
 						}
 					}
 				}else {
-					for (Position pos : p.generateMoves(this)) {
+					for (Move move : p.generateMoves(this)) {
+						Position pos = move.getTo();
 						if (pos.equals(movingKing.getPosition())) {
 							piecesPuttingKingInCheck.add(p);
 						}
@@ -171,13 +180,13 @@ public class Board {
 		if (piecesPuttingKingInCheck.size() >= 2) {
 			//if there are two pieces putting the king in check, and the king can't move, then the game is over
 			
-			ArrayList<Position> kingMoves = getKing(movingPlayer).generateMoves(this);
+			ArrayList<Move> kingMoves = getKing(movingPlayer).generateMoves(this);
 			if (kingMoves.size() == 0) {
 				isCheckmate = true;
 			}else {
 				getAllyMoves(movingPlayer).clear();
-				for (Position pos : kingMoves) {
-					getAllyMoves(movingPlayer).add(new Move(movingKing.getPosition(), pos));
+				for (Move move : kingMoves) {
+					getAllyMoves(movingPlayer).add(move);
 				}
 			}
 			
@@ -216,8 +225,8 @@ public class Board {
 					}
 				}
 			}
-			for (Position kingMoves : movingKing.generateMoves(this)) {
-				newMoves.add(new Move(movingKing.getPosition(), kingMoves));
+			for (Move kingMoves : movingKing.generateMoves(this)) {
+				newMoves.add(kingMoves);
 			}
 			getAllyMoves(movingPlayer).clear();
 			getAllyMoves(movingPlayer).addAll(newMoves);
@@ -274,15 +283,12 @@ public class Board {
 				}
 			}
 		}
-//		boardCopy.blackMoves = (ArrayList<Move>) blackMoves.clone();
-//		boardCopy.whiteMoves = (ArrayList<Move>) whiteMoves.clone();
 		
 		boardCopy.blackMoves = blackMoves;
 		boardCopy.whiteMoves = whiteMoves;
 		
 		boardCopy.blackKing = (King) getKing(Settings.BLACK_PLAYER_ID);
 		boardCopy.whiteKing = (King) getKing(Settings.WHITE_PLAYER_ID);
-		//boardCopy.getPieceAt(getKing(Settings.WHITE_PLAYER_ID).getPosition());
 		
 		
 		return boardCopy;

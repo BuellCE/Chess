@@ -4,6 +4,7 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 import evan.chess.logic.Board;
+import evan.chess.logic.Move;
 import evan.chess.logic.Position;
 import evan.chess.main.Settings;
 
@@ -23,7 +24,7 @@ public abstract class PlayingPiece extends Object {
 		limitedMovement = new ArrayList<Position>();
 	}
 	
-	public abstract ArrayList<Position> generateMoves(Board board);
+	public abstract ArrayList<Move> generateMoves(Board board);
 	public abstract ArrayList<Position> generatePressuredPositions(Board board, int playerToPressure);
 	public abstract BufferedImage getImageOfPiece();
 	public abstract int getWorth();

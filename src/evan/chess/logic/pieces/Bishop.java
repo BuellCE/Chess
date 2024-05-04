@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import javax.imageio.ImageIO;
 
 import evan.chess.logic.Board;
+import evan.chess.logic.Move;
 import evan.chess.logic.Position;
 import evan.chess.main.Settings;
 
@@ -27,6 +28,7 @@ public class Bishop extends PlayingPiece{
 		 {-2,-1,-1,0,0,-1,-1,-2}
 	};
 	
+	//All directions a bishop can move
 	private static final int[][] OFFSETS = {
 		{1,1}, {1,-1}, {-1,1}, {-1,-1}
 	};
@@ -76,8 +78,15 @@ public class Bishop extends PlayingPiece{
 	}
 	
 	@Override
-	public ArrayList<Position> generateMoves(Board board) {
-		return super.generateLinearPositions(OFFSETS, board);
+	public ArrayList<Move> generateMoves(Board board) {
+		
+		ArrayList<Move> moves = new ArrayList<Move>();
+		
+		for (Position pos : super.generateLinearPositions(OFFSETS, board)) {
+			moves.add(new Move(this.getPosition(), pos));
+		}
+		
+		return moves;
 	}
 
 	

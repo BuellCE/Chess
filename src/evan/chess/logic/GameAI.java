@@ -6,16 +6,19 @@ import evan.chess.main.Settings;
 
 public class GameAI {
 
-	private GameController controller;
 	private Board board;
 	
 	@SuppressWarnings("unused")
 	private int outcomeCount;
 	private static final int AI_SEARCH_DEPTH = 3;
+	private Move nextMove;
 	
-	public GameAI(GameController controller, Board board) {
-		this.controller = controller;
+	public GameAI(Board board) {
 		this.board = board;
+	}
+	
+	public Move getNextMove() {
+		return nextMove;
 	}
 	
 	public void chooseNextMove() {
@@ -24,7 +27,7 @@ public class GameAI {
 		
 		MoveScore scoredMove = findBestOutcome(board, AI_SEARCH_DEPTH, Settings.BLACK_PLAYER_ID, Integer.MIN_VALUE, Integer.MAX_VALUE);
 		
-		controller.cpuAttemptMove(scoredMove.getMove());
+		nextMove = scoredMove.getMove();
 		
 	}
 	

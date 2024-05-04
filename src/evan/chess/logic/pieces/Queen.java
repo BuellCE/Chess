@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import javax.imageio.ImageIO;
 
 import evan.chess.logic.Board;
+import evan.chess.logic.Move;
 import evan.chess.logic.Position;
 import evan.chess.main.Settings;
 
@@ -27,6 +28,7 @@ public class Queen extends PlayingPiece{
 		 {-2,-1,-1,0,0,-1,-1,-2}
 	};
 	
+	//All directions a queen can move
 	private static final int[][] OFFSETS = {
 		{1,1}, {1,-1}, {-1,1}, {-1,-1}, {1,0}, {-1,0}, {0,1}, {0,-1}
 	};
@@ -72,8 +74,16 @@ public class Queen extends PlayingPiece{
 	}
 	
 	@Override
-	public ArrayList<Position> generateMoves(Board board) {
-		return super.generateLinearPositions(OFFSETS, board);
+	public ArrayList<Move> generateMoves(Board board) {
+		
+		ArrayList<Move> moves = new ArrayList<Move>();
+		
+		for (Position pos : super.generateLinearPositions(OFFSETS, board)) {
+			moves.add(new Move(this.getPosition(), pos));
+		}
+		
+		return moves;
+		
 	}
 	
 	@Override
@@ -82,54 +92,6 @@ public class Queen extends PlayingPiece{
 	}
 
 }
-
-
-
-//ArrayList<Position> generatedMoves = new ArrayList<Position>();
-//
-//for (int[] offset : OFFSETS) {
-//	Position move = new Position(getPosition().x, getPosition().y);
-//	while(true) {
-//		move.x += offset[0];
-//		move.y += offset[1];
-//		if (!board.isInBounds(move.x, move.y)) {
-//			break;
-//		}
-//		if (super.isMovePossible(board, move)) {
-//			generatedMoves.add(new Position(move.x, move.y));
-//		}
-//		if (!board.isSquareEmpty(move.x, move.y)) {
-//			System.out.println("C");
-//			break;
-//		}
-/////////////
-//		//TEST
-//		if (!limitedMovement.isEmpty()) {
-//			
-//			for (Position pos : limitedMovement) {
-//				if (pos.equals(move)) {
-//					generatedMoves.add(new Position(move.x, move.y));
-//				}
-//			}
-//			continue;
-//		}
-//		//TEST
-//		
-//		
-//		if (board.isSquareEmpty(move.x, move.y)) {
-//			generatedMoves.add(new Position(move.x, move.y));
-//			
-//		}else if (board.isSquareAWhitePiece(move.x, move.y) != isAWhitePiece()) { //an enemy piece
-//			
-//			generatedMoves.add(new Position(move.x, move.y));
-//			break;
-//		}else { //an ally piece (or off the board)
-//			break;
-//		}
-//	}
-//}
-//
-//return generatedMoves;
 
 
 

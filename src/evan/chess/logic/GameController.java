@@ -23,7 +23,7 @@ public class GameController {
 	private Timer timer;
 	
 	private Position selectedPiece;
-	private ArrayList<Position> possibleMoves;
+	private ArrayList<Move> possibleMoves;
 	
 	
 	public GameController(Game game) {
@@ -32,7 +32,7 @@ public class GameController {
 		gameBoard = new Board();
 		
 		controls = new ControlHandler(this);
-		cpu = new GameAI(this, gameBoard);
+		cpu = new GameAI(gameBoard);
 		
 		startNewGame();
 	}
@@ -45,12 +45,14 @@ public class GameController {
 		
 		gameBoard.makeAMove(move, playerId);
 		
+		game.repaint();
+		
 		if (gameBoard.isCheckMate()) {
 			endGame();
 		}else {
 			swapTurns();
 		}
-		game.repaint();
+		
 	}
 	
 	public void selectPieceAtLocation(Position p) {
@@ -63,13 +65,13 @@ public class GameController {
 				if (piece == null) {
 					return;
 				}
-//				possibleMoves = piece.generateMoves(gameBoard);
-				ArrayList<Position> moves = new ArrayList<Position>();
+				ArrayList<Move> moves = new ArrayList<Move>();
 
 				for (Move mo : gameBoard.getWhiteMoves()) {
-					for (Position possibleMoves : piece.generateMoves(gameBoard)) {
+					for (Move move : piece.generateMoves(gameBoard)) {
+						Position possibleMoves = move.getTo();
 						if (mo.getFrom().equals(p) && mo.getTo().equals(possibleMoves)) {
-							moves.add(possibleMoves);
+							moves.add(move);
 						}
 					}
 				}
@@ -87,9 +89,10 @@ public class GameController {
 			
 			if (selectedPiece.x != p.x || selectedPiece.y != p.y) {
 				
-				for (Position possible : possibleMoves) {
+				for (Move move : possibleMoves) {
+					Position possible = move.getTo();
 					if (possible.x == p.x && possible.y == p.y) {
-						makeAMove(new Move(selectedPiece, possible), Settings.WHITE_PLAYER_ID);
+						makeAMove(move, Settings.WHITE_PLAYER_ID);
 						break;
 					}
 				}
@@ -130,7 +133,7 @@ public class GameController {
 		return gameBoard;
 	}
 	
-	public ArrayList<Position> getPossibleMoves(){
+	public ArrayList<Move> getPossibleMoves(){
 		return possibleMoves;
 	}
 	
@@ -153,11 +156,15 @@ public class GameController {
 		if (isWhitesTurn) {
 			isWhitesTurn = false;
 			
+			cpu.chooseNextMove(); //prepare the AI's next move, then wait 200ms before making it.
+			
 			timer = new Timer(200, new ActionListener(){    
 				@Override
 	            public void actionPerformed(ActionEvent e) {
 					timer.stop();
-					cpu.chooseNextMove();
+					
+					cpuAttemptMove(cpu.getNextMove());
+					
 	            }
 	        });
 			timer.start();
